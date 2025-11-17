@@ -4,10 +4,12 @@
 
 import json
 from episodic_memory import EpisodicMemory
-
+from memory_health_score import compute_memory_health
 
 def simple_diagnose(memory: EpisodicMemory, key: str):
     data = memory.get(key)
+
+    # 先根据有没有记忆，给出基本结论
     if data is None:
         report = {
             "issue_type": "missing_memory",
@@ -23,9 +25,14 @@ def simple_diagnose(memory: EpisodicMemory, key: str):
             "recommended_fix": []
         }
 
+    # 再调用“记忆健康度”模块，给一个分数
+    health = compute_memory_health(data)
+    report["memory_health"] = health  # 把健康度信息塞到报告里
+
     print("诊断结果：")
     print(json.dumps(report, ensure_ascii=False, indent=4))
     return report
+
 
 
 if __name__ == "__main__":
