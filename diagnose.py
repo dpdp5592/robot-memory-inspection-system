@@ -5,7 +5,7 @@
 import json
 from episodic_memory import EpisodicMemory
 from memory_health_score import compute_memory_health
-
+from simple_env import run_episode
 
 def save_report_to_file(report: dict, filename: str):
     """把诊断结果保存为一个 JSON 文件。"""
@@ -46,15 +46,20 @@ if __name__ == "__main__":
     mem = EpisodicMemory()
 
     print("【第一次年检】什么记忆都没有：")
-    simple_diagnose(mem, "demo_traj")
+    simple_diagnose(mem, "robot_traj")
 
-    print("\n现在往记忆里加一条记录……\n")
-    fake_traj = [0, 1, 2, 3]
-    fake_sensors = {"force": 0.1}
-    mem.add("demo_traj", fake_traj, fake_sensors)
+    print("\n现在让虚拟机器人跑一圈，收集一条“真实”轨迹记忆……\n")
+    # 这里用虚拟机器人环境来生成一条轨迹和对应的传感器数据
+    traj, sensors = run_episode()
+    print("虚拟机器人轨迹：", traj)
+    print("虚拟机器人传感器：", sensors)
 
-    print("【第二次年检】已经有记忆了：")
-    report = simple_diagnose(mem, "demo_traj")
+    # 把刚刚这次“机器人执行任务”的数据，存进记忆系统
+    mem.add("robot_traj", traj, sensors)
+
+    print("\n【第二次年检】使用虚拟机器人生成的记忆：")
+    report = simple_diagnose(mem, "robot_traj")
 
     # 把第二次年检的结果保存成一个 JSON 文件
-    save_report_to_file(report, "diagnose_report.json")
+    save_report_to_file(report, "diagnose_report_robot.json")
+
