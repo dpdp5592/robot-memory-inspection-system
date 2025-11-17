@@ -1,21 +1,9 @@
 # file: diagnose.py
 
-import time
+# file: diagnose.py
+
 import json
-
-class EpisodicMemory:
-    def __init__(self):
-        self.store = {}
-
-    def add(self, key, trajectory, sensors):
-        self.store[key] = {
-            "trajectory": trajectory,
-            "sensors": sensors,
-            "timestamp": time.time()
-        }
-
-    def get(self, key):
-        return self.store.get(key, None)
+from episodic_memory import EpisodicMemory
 
 
 def simple_diagnose(memory: EpisodicMemory, key: str):
